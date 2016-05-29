@@ -34,7 +34,7 @@ public class RxNewPostActivity extends AppCompatActivity {
         presenter = new RxNewPostPresenter(
                 getOwnerChanges(),
                 getTextChanges());
-        presenter.observeButtonVisibility()
+        presenter.observeSendButtonVisibility()
                 .doOnNext(this::setButtonVisible)
                 .subscribe();
         setupToolbar();

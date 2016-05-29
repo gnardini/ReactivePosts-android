@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import com.gnardini.reactiveposts.R;
@@ -28,6 +30,7 @@ public class PostsActivity extends AppCompatActivity {
 
     @BindView(R.id.posts_toolbar) Toolbar toolbar;
     @BindView(R.id.posts_list) RecyclerView postsList;
+    @BindView(R.id.posts_loading) View loadingView;
 
     private PostsAdapter postsAdapter;
     private PostsRepository postsRepository;
@@ -47,11 +50,15 @@ public class PostsActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        postsList.setHasFixedSize(true);
         postsList.setLayoutManager(new LinearLayoutManager(this));
         postsAdapter = new PostsAdapter();
         postsList.setAdapter(postsAdapter);
         postsRepository.getPosts()
-                .doOnNext(postsAdapter::add)
+                .doOnNext(post -> {
+                    loadingView.setVisibility(View.GONE);
+                    postsAdapter.add(post);
+                })
                 .subscribe();
     }
 
@@ -78,6 +85,17 @@ public class PostsActivity extends AppCompatActivity {
             Post post = posts.get(position);
             holder.postOwner.setText(post.getOwner());
             holder.postText.setText(post.getText());
+            animateIn(holder.itemView);
+        }
+
+        private void animateIn(View view) {
+            TranslateAnimation anim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF, -1.0f,
+                    Animation.RELATIVE_TO_SELF, .0f,
+                    Animation.RELATIVE_TO_SELF, .0f,
+                    Animation.RELATIVE_TO_SELF, .0f);
+            anim.setDuration(300);
+            view.startAnimation(anim);
         }
 
         @Override

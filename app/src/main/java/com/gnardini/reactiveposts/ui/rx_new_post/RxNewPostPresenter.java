@@ -28,7 +28,7 @@ public class RxNewPostPresenter {
         return postsRepository.postNew(getPost());
     }
 
-    public Observable<Boolean> observeButtonVisibility() {
+    public Observable<Boolean> observeSendButtonVisibility() {
         return sendButtonVisibility;
     }
 
